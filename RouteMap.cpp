@@ -7,21 +7,18 @@ RouteMap::RouteMap(){
 }; //end constructor
 
 City* RouteMap::getCity(size_t position){ 
-    if (position <= numberOfCitys())
-        std::cout << "Catching";
-    assert(position <= numberOfCitys());
+    return all_citys_[position];
 }
 
 bool RouteMap::readMap(std::string input_file_name){ 
     std::ifstream file;
     file.open(input_file_name);
-    if(file.is_open() == false){
-        std::cout << "Catching";
-        return false;
+    try{
+        if(emptyFileTest(file))
+            throw 99;
+    } catch (int x){
+        std::cout << "Catching\n";
     }
-    if(emptyFileTest(file))
-        std::cout << "Catching";
-    assert(emptyFileTest(file) == false);
     std::string read;
     while(read.find('-') == std::string::npos){ //first line while loop
         std::getline(file, read, ',');
@@ -36,6 +33,7 @@ bool RouteMap::readMap(std::string input_file_name){
     }
     City* last_city_ptr = new City(read);
     all_citys_.push_back(last_city_ptr);
+
 
     //closing file and reopening.
     file.close();
@@ -110,11 +108,6 @@ void RouteMap::printResults(){
     }
     std::cout << std::endl;
 }
-
-int RouteMap::numberOfCitys(){
-    return all_citys_.size();
-}
-
 
 bool RouteMap::emptyFileTest(std::ifstream& pFile){
     return pFile.peek() == std::ifstream::traits_type::eof();
